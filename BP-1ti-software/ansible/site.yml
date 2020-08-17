@@ -1,0 +1,88 @@
+---
+- hosts: all
+  become: true
+  vars:
+    - ansible_python_interpreter: "{{ '/usr/bin/env python3'}}"
+  tasks:
+    - set_fact:
+        ansible_python_interpreter: "{{ ansible_playbook_python }}"
+        delegate_to: localhost
+        delegate_facts: true
+
+- hosts:
+    - 1ti
+    - cyber
+  become: true
+  pre_tasks:
+    - name: Configure BE and US as keyboard layouts for lockscreen
+      shell:
+        cmd: >-
+          gsettings set org.gnome.desktop.input-sources sources "[('xkb','be'),('xkb', 'us')]"
+      when: "ansible_facts['distribution'] == 'Ubuntu'"
+      become_user: vagrant
+    - name: Configure BE and US as keyboard layouts in Gnome
+      lineinfile:
+        path: /etc/default/keyboard
+        regexp: XKBLAYOUT="us"
+        line: 'XKBLAYOUT="be,us"'
+      when: "ansible_facts['distribution'] == 'Ubuntu'"
+    - name: Configure BE and US keyboard layouts in XFCE
+      copy:
+        dest: /etc/X11/xorg.conf.d/10-keyboard.conf
+        content: |
+          Section "InputClass"
+              Identifier "keyboard-all"
+              Driver "evdev"
+              Option "XkbLayout" "be,us"
+              Option "XkbOptions" "grp:shift_toggle,grp_led:scroll"
+              MatchIsKeyboard "on"
+          EndSection
+      when: "ansible_facts['distribution'] == 'Kali GNU/Linux'"
+
+
+- hosts: 1ti
+  become: true
+  tasks:
+    - import_tasks: ./olod_playbooks/oosd.yml
+    - import_tasks: ./olod_playbooks/dbs.yml
+    - import_tasks: ./olod_playbooks/ops.yml
+    - import_tasks: ./olod_playbooks/cn.yml
+  post_tasks:
+    - name: Install python-psutil package
+      apt:
+        name: 
+          - python-psutil
+
+    - name: Copy wallpaper file
+      copy: 
+          src: /vagrant/ansible/files/wallpaper.jpg 
+          dest: /home/vagrant/.wallpaper.jpg 
+          owner: vagrant 
+          group: vagrant 
+          mode: '0600'
+          remote_src: true
+
+    - name: Set GNOME Wallpaper
+      become_user: vagrant
+      dconf: 
+        key: "/org/gnome/desktop/background/picture-uri" 
+        value: "'file:///home/vagrant/.wallpaper.jpg'"
+
+- hosts: ops-kub-master
+  become: true
+  tasks:
+    - import_tasks: ./olod_playbooks/ops-kub.yml
+    - import_tasks: ./olod_playbooks/ops-kub-master.yml
+    # - import_tasks: ./olod_playbooks/ops.yml
+  handlers:
+    - name: docker status
+      service: name=docker state=started
+
+- hosts: ops-kub-node
+  become: true
+  tasks:
+    - import_tasks: ./olod_playbooks/ops-kub.yml
+    - import_tasks: ./olod_playbooks/ops-kub-node.yml
+  handlers:
+    - name: docker status
+      service: name=docker state=started

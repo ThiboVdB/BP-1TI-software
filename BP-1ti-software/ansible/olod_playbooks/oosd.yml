@@ -1,0 +1,84 @@
+- name: Install Java 11 JDK and JRE
+  apt:
+    name:
+      - openjdk-11-jdk
+      - openjdk-11-jre
+    state: present
+
+- name: Install git
+  apt:
+    name:
+      - git
+    state: present
+
+- name: Install Eclipse IDE
+  snap:
+    name:
+      - eclipse
+    classic: yes
+    state: present
+
+- name: Execute SceneBuilder installer
+  apt:
+    deb: >-
+      https://download2.gluonhq.com/scenebuilder/11.0.0/install/linux/scenebuilder-11.0.0.deb
+
+- stat: >-
+    path=/home/vagrant/Visual_Paradigm_CE_16_2_20200763_Linux64_InstallFree.tar.gz
+  register: VisualParadigm_tar
+
+- name: Download Visual Paradigm compressed folder
+  get_url:
+    url: >-
+      https://uk3.dl.visual-paradigm.com/visual-paradigm/vpce16.2/20200763/Visual_Paradigm_CE_16_2_20200763_Linux64_InstallFree.tar.gz
+    dest: /home/vagrant/
+    mode: "0777"
+  when: not VisualParadigm_tar.stat.exists
+
+- name: Unzip Visual Paradigm folder
+  unarchive:
+    src: >-
+      /home/vagrant/Visual_Paradigm_CE_16_2_20200763_Linux64_InstallFree.tar.gz
+    dest: /home/vagrant/
+    remote_src: true
+  when: not VisualParadigm_tar.stat.exists
+
+- stat: path=/usr/bin/Visual_Paradigm_CE_16.2
+  register: visualparadigm_correctlocation
+
+- name: Move Visual Paradigm folder to the correct location
+  shell:
+    cmd: mv /home/vagrant/Visual_Paradigm_CE_16.2 /usr/bin
+  when: not visualparadigm_correctlocation.stat.exists
+
+- name: Ansible create file with content example
+  copy:
+    dest: /usr/share/applications/visualparadigm.desktop
+    content: >
+      [Desktop Entry]
+
+      NotShowIn=Unity;
+
+      Name=Visual Paradigm
+
+      Comment=UML Modelling
+
+      Keywords=visual;paradigm;
+
+      Exec=/usr/bin/Visual_Paradigm_CE_16.2/Visual_Paradigm
+
+      # Translators: Do NOT translate or transliterate this text (this is an
+      icon file name)!
+
+      Icon=/usr/bin/Visual_Paradigm_CE_16.2/Application/resources/vpuml.png
+
+      Terminal=false
+
+      Type=Application
+
+      StartupNotify=true
+    mode: "0777"
+      
+- name: Test VisualParadigm
+  shell:
+    cmd: sudo /usr/bin/Visual_Paradigm_CE_16.2/Visual_Paradigm

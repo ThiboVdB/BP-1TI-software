@@ -1,0 +1,114 @@
+- name: Install MySQL-Workbench
+  apt:
+    name:
+      - mysql-workbench
+    state: present
+
+- name: Add DBeaver GPG apt Key
+  apt_key:
+    url: 'https://dbeaver.io/debs/dbeaver.gpg.key'
+    state: present
+
+- name: Add DBeaver Repository
+  apt_repository:
+    repo: 'deb https://dbeaver.io/debs/dbeaver-ce /'
+    state: present
+
+- name: Install DBeaver
+  apt:
+    name: 
+      - dbeaver-ce
+    state: present
+
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: 'https://download.docker.com/linux/ubuntu/gpg'
+    state: present
+
+- name: Add Docker Repository
+  apt_repository:
+    repo: 'deb https://download.docker.com/linux/ubuntu bionic stable'
+    state: present
+    mode: "0777"
+
+- name: Install docker-ce
+  apt:
+    name:
+      - docker-ce
+    state: present
+
+- name: install Python pip
+  apt:
+    name: 
+      - python-pip
+    state: present
+
+- name: Install Docker Modules for Python
+  pip:
+    name:
+      - docker
+    executable: pip
+
+- name: Add vagrant user to Docker groups
+  user:
+    name: vagrant
+    groups: docker
+    
+- name: Restart docker service
+  service:
+    name: docker
+    state: restarted
+
+- name: Create mariaDB container
+  docker_container:
+    name: mysqldb
+    image: mariadb
+    state: started
+    ports:
+      - '3306:3306'
+    env:
+      MYSQL_ROOT_PASSWORD: root
+
+- name: Create PostgreSQL container
+  docker_container:
+    name: postgresdb
+    image: postgres
+    state: started
+    ports:
+      - '5432:5432'
+    env:
+     POSTGRES_PASSWORD: root
+
+- name: Create Microsoft SQL Server container
+  docker_container:
+    name: mssqldb
+    image: mcr.microsoft.com/mssql/server
+    state: started
+    ports:
+      - '1433:1433'
+    env:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "P@ssw0rd1"
+      MSSQL_PID: "Developer"
+
+- name: Create phpMyAdmin container
+  docker_container:
+    name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    state: started
+    ports:
+      - '8081:80'
+    links:
+      - 'mysqldb:db'
+
+- name: Create PHP/Apache container
+  docker_container:
+    name: webserver
+    image: 'php:apache'
+    state: started
+    ports:
+      - '80:80'
+    # volumes:
+    # - '/vagrant/olods/dbs/web/:/var/www/html/'
+    links:
+      - 'mysqldb:db'

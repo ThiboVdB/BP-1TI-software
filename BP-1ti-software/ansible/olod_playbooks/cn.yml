@@ -1,0 +1,57 @@
+- stat: path=/home/vagrant/PacketTracer_730_amd64.deb
+  register: PacketTracer_pkg
+
+- name: Download PacketTracer 
+  get_url:
+    url: >-
+      https://ia802803.us.archive.org/12/items/packettracer730mac_202002/PacketTracer_730_amd64.deb
+    dest: /home/vagrant/
+    mode: "0777"
+  when: not PacketTracer_pkg.stat.exists
+
+- name: Create temporary folder
+  file:
+    path: /home/vagrant/temp
+    state: directory
+    mode: "0777"
+    recurse: true
+
+- stat: path=/home/vagrant/temp/opt
+  register: pt_already_depackaged
+
+- name: Depackage PacketTracer 
+  shell:
+    cmd: >-
+      dpkg-deb -R /home/vagrant/PacketTracer_730_amd64.deb
+      /home/vagrant/temp
+  when: not pt_already_depackaged.stat.exists
+
+- name: Replace line is PT installation script
+  replace:
+    path: /home/vagrant/temp/DEBIAN/preinst
+    regexp: STATE=1
+    replace: STATE=4
+  when: not pt_already_depackaged.stat.exists
+
+- name: Set correct permissions on temp folder to create PT packages
+  file:
+    path: /home/vagrant/temp
+    mode: "0755"
+    recurse: true
+
+- stat: path=/home/vagrant/ptfix.deb
+  register: pt_already_packaged
+
+- name: Re-package PacketTracer 
+  shell:
+    cmd: dpkg-deb -b /home/vagrant/temp/ /home/vagrant/ptfix.deb
+  when: not pt_already_packaged.stat.exists
+  
+- name: Install PacketTracer 
+  apt:
+    deb: /home/vagrant/ptfix.deb
+
+- name: Remove additional PacketTracer file
+  file:
+    path: /usr/share/applications/cisco-ptsa7.desktop
+    state: absent

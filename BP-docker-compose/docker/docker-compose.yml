@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  db:
+    image: dbs_planten:latest
+    environment:
+      # - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_ROOT_PASSWORD=demo
+    ports: 
+      - "3306"
+#     networks:
+#       - dbnet
+
+# networks:
+#   dbnet:
+#     ipam:
+#       driver: bridge
+#       config:
+#         - subnet: 192.168.56.0/24

@@ -1,0 +1,29 @@
+# vagrant_hosts.yml
+#
+# List of hosts to be created by Vagrant. For more information about the
+# possible settings, see the documentation at
+# <https://github.com/bertvv/ansible-skeleton>
+---
+- name: 1ti
+  ip: 192.168.56.10
+  box: thibovdb/ubuntu-18.04
+  # box: ubu
+  cpus: 2
+  memory: 2048
+- name: ops-kub-master
+  ip: 192.168.56.12
+  # box: thibovdb/ubuntu-18.04
+  box: bento/ubuntu-18.04
+  cpus: 2
+  memory: 2048
+- name: ops-kub-node
+  ip: 192.168.56.13
+  box: bento/ubuntu-18.04
+  # box: thibovdb/ubuntu-18.04
+  cpus: 2
+  memory: 2048
+- name: cyber
+  ip: 192.168.56.14
+  box: kalilinux/rolling
+  cpus: 2
+  memory: 1024
