@@ -1,0 +1,20 @@
+---
+ops_docker_gpg_key: 'https://download.docker.com/linux/ubuntu/gpg'
+
+ops_docker_repo_url: 'https://download.docker.com/linux/ubuntu bionic stable'
+
+ops_kubernetes_gpg_key: 'https://packages.cloud.google.com/apt/doc/apt-key.gpg'
+
+ops_kubernetes_repo_url: 'http://apt.kubernetes.io/ kubernetes-xenial main'
+
+ops_docker_packages:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+
+ops_kubernetes_packages:
+  - kubeadm
+  - kubelet
+  - kubectl
+
+ops_weave_url: 'https://cloud.weave.works/k8s/v1.16/net.yaml?k8s-version=1.18.6'

@@ -1,11 +1,10 @@
-- stat: path=/home/vagrant/PacketTracer_730_amd64.deb
+- stat: path=/home/vagrant/packettracer.deb
   register: PacketTracer_pkg
 
 - name: Download PacketTracer 
   get_url:
-    url: >-
-      https://ia802803.us.archive.org/12/items/packettracer730mac_202002/PacketTracer_730_amd64.deb
-    dest: /home/vagrant/
+    url: '{{ cn_packettracer_url }}'      
+    dest: /home/vagrant/packettracer.deb
     mode: "0777"
   when: not PacketTracer_pkg.stat.exists
 
@@ -22,7 +21,7 @@
 - name: Depackage PacketTracer 
   shell:
     cmd: >-
-      dpkg-deb -R /home/vagrant/PacketTracer_730_amd64.deb
+      dpkg-deb -R /home/vagrant/packettracer.deb
       /home/vagrant/temp
   when: not pt_already_depackaged.stat.exists
 

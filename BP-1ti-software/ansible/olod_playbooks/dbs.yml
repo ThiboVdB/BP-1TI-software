@@ -1,47 +1,38 @@
-- name: Install MySQL-Workbench
-  apt:
-    name:
-      - mysql-workbench
-    state: present
-
 - name: Add DBeaver GPG apt Key
   apt_key:
-    url: 'https://dbeaver.io/debs/dbeaver.gpg.key'
+    url: '{{ dbs_dbeaver_gpg_key }}'
     state: present
 
 - name: Add DBeaver Repository
   apt_repository:
-    repo: 'deb https://dbeaver.io/debs/dbeaver-ce /'
-    state: present
-
-- name: Install DBeaver
-  apt:
-    name: 
-      - dbeaver-ce
+    repo: 'deb {{ dbs_dbeaver_repo_url }} /'
     state: present
 
 - name: Add Docker GPG apt Key
   apt_key:
-    url: 'https://download.docker.com/linux/ubuntu/gpg'
+    url: '{{ dbs_docker_gpg_key }}'
     state: present
 
 - name: Add Docker Repository
   apt_repository:
-    repo: 'deb https://download.docker.com/linux/ubuntu bionic stable'
+    repo: 'deb {{ dbs_docker_repo_url }}'
     state: present
     mode: "0777"
 
-- name: Install docker-ce
-  apt:
-    name:
-      - docker-ce
+- name: Install MySQL workbench, DBeaver, Python-pip and Docker
+  package:
+    name: '{{ item }}'
     state: present
+  with_items:
+    - '{{ dbs_dbms_packages }}'
+    - '{{ dbs_docker_packages }}'
+    - python-pip
 
-- name: install Python pip
-  apt:
-    name: 
-      - python-pip
-    state: present
+# - name: install Python pip
+#   apt:
+#     name: 
+#       - python-pip
+#     state: present
 
 - name: Install Docker Modules for Python
   pip:
@@ -67,7 +58,7 @@
     ports:
       - '3306:3306'
     env:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: '{{ dbs_mysql_password }}'
 
 - name: Create PostgreSQL container
   docker_container:
@@ -77,7 +68,7 @@
     ports:
       - '5432:5432'
     env:
-     POSTGRES_PASSWORD: root
+     POSTGRES_PASSWORD: '{{ dbs_postgres_password }}'
 
 - name: Create Microsoft SQL Server container
   docker_container:
@@ -88,7 +79,7 @@
       - '1433:1433'
     env:
       ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "P@ssw0rd1"
+      MSSQL_SA_PASSWORD: '{{ dbs_mssql_password }}'
       MSSQL_PID: "Developer"
 
 - name: Create phpMyAdmin container

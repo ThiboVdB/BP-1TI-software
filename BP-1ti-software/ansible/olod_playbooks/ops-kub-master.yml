@@ -18,7 +18,7 @@
 
   - name: Install Weave Net pod network
     become: false
-    command: kubectl apply -f "https://cloud.weave.works/k8s/v1.16/net.yaml?k8s-version=1.18.6"
+    command: kubectl apply -f "{{ ops_weave_url }}"
     when: not k8s_conf.stat.exists 
 
   - name: Generate join command

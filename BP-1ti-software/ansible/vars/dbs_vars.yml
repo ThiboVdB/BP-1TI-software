@@ -1,0 +1,21 @@
+---
+dbs_dbeaver_gpg_key: 'https://dbeaver.io/debs/dbeaver.gpg.key'
+
+dbs_dbeaver_repo_url: 'https://dbeaver.io/debs/dbeaver-ce'
+
+dbs_docker_gpg_key: 'https://download.docker.com/linux/ubuntu/gpg'
+
+dbs_docker_repo_url: 'https://download.docker.com/linux/ubuntu bionic stable'
+
+dbs_dbms_packages:
+  - mysql-workbench
+  - dbeaver-ce
+
+dbs_docker_packages:
+ - docker-ce
+
+dbs_mysql_password: 'root'
+
+dbs_postgres_password: 'root'
+
+dbs_mssql_password: 'P@ssw0rd1'

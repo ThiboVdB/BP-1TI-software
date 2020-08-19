@@ -42,6 +42,11 @@
 
 - hosts: 1ti
   become: true
+  vars_files:
+    - ./vars/oosd_vars.yml
+    - ./vars/dbs_vars.yml
+    - ./vars/cn_vars.yml
+    - ./vars/ops_vars.yml
   tasks:
     - import_tasks: ./olod_playbooks/oosd.yml
     - import_tasks: ./olod_playbooks/dbs.yml
@@ -49,10 +54,10 @@
     - import_tasks: ./olod_playbooks/cn.yml
   post_tasks:
     - name: Install python-psutil package
-      apt:
-        name: 
-          - python-psutil
-
+      package:
+        name: python-psutil
+        state: present
+        
     - name: Copy wallpaper file
       copy: 
           src: /vagrant/ansible/files/wallpaper.jpg 
@@ -67,6 +72,7 @@
       dconf: 
         key: "/org/gnome/desktop/background/picture-uri" 
         value: "'file:///home/vagrant/.wallpaper.jpg'"
+  ignore_errors: yes
 
 - hosts: ops-kub-master
   become: true
@@ -76,7 +82,9 @@
     # - import_tasks: ./olod_playbooks/ops.yml
   handlers:
     - name: docker status
-      service: name=docker state=started
+      service: 
+        name: docker 
+        state: started
 
 - hosts: ops-kub-node
   become: true
@@ -85,4 +93,6 @@
     - import_tasks: ./olod_playbooks/ops-kub-node.yml
   handlers:
     - name: docker status
-      service: name=docker state=started
+      service: 
+        name: docker 
+        state: started

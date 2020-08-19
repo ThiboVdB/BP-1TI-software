@@ -1,33 +1,45 @@
 - name: Add Docker GPG apt Key
   apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
+    url: '{{ ops_docker_gpg_key }}'
     state: present
 
 - name: Add Docker Repository
   apt_repository:
-    repo: deb https://download.docker.com/linux/ubuntu bionic stable
+    repo: deb '{{ ops_docker_repo_url }}'
     state: present
     mode: '0777'
 
-- name: Install Docker Engine
-  apt:
-    name: 
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
+- name: Add Kubernetes GPG apt Key
+  apt_key:
+    url: '{{ ops_kubernetes_gpg_key }}'
     state: present
 
-- name: Install pip
-  apt:
-    name: python-pip
+- name: Add Kubernetes Repository
+  apt_repository:
+    repo: deb '{{ ops_kubernetes_repo_url }}'
     state: present
+    mode: '0777'
+
+- name: Install Docker Engine, Python-pip and Kubernetes
+  package:
+    name:  '{{ item }}'
+    state: present
+  with_items:
+    - '{{ ops_docker_packages }}'
+    - python-pip
+    - '{{ ops_kubernetes_packages }}'
+
+# - name: Install pip
+#   package:
+#     name: python-pip
+#     state: present
 
 - name: Install Docker Modules for Python
   pip:
     name: 
       - docker
-      # - docker-py
     executable: pip
+
 - name: Add vagrant user to Docker groups
   user:
     name: vagrant
@@ -38,28 +50,9 @@
     name: docker
     state: restarted
 
-- name: Add Kubernetes GPG apt Key
-  apt_key:
-    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-    state: present
-
-- name: Add Kubernetes Repository
-  apt_repository:
-    repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
-    state: present
-    mode: '0777'
-
-- name: Install Kubernetes
-  apt:
-    name: 
-      - kubeadm
-      - kubelet
-      - kubectl
-    state: present
-
 - name: Disable SWAP since kubernetes can't work with swap enabled (1/2)
-  shell: |
-    swapoff -a
+  shell: 
+    cmd: 'swapoff -a'
 
 - name: Disable SWAP in fstab since kubernetes can't work with swap enabled (2/2)
   replace:

@@ -1,15 +1,8 @@
-- name: Install Java 11 JDK and JRE
-  apt:
-    name:
-      - openjdk-11-jdk
-      - openjdk-11-jre
+- name: Install Java JDK, JRE and Git
+  package:
+    name: '{{ item }}'
     state: present
-
-- name: Install git
-  apt:
-    name:
-      - git
-    state: present
+  with_items: '{{ oosd_packages }}'
 
 - name: Install Eclipse IDE
   snap:
@@ -20,35 +13,48 @@
 
 - name: Execute SceneBuilder installer
   apt:
-    deb: >-
-      https://download2.gluonhq.com/scenebuilder/11.0.0/install/linux/scenebuilder-11.0.0.deb
-
+    deb: '{{ oosd_scenebuilder_url }}'
+      
 - stat: >-
-    path=/home/vagrant/Visual_Paradigm_CE_16_2_20200763_Linux64_InstallFree.tar.gz
+    path=/home/vagrant/visualparadigm.tar.gz
   register: VisualParadigm_tar
 
-- name: Download Visual Paradigm compressed folder
+- name: Download Visual Paradigm compressed archive
   get_url:
-    url: >-
-      https://uk3.dl.visual-paradigm.com/visual-paradigm/vpce16.2/20200763/Visual_Paradigm_CE_16_2_20200763_Linux64_InstallFree.tar.gz
-    dest: /home/vagrant/
+    url: '{{ oosd_visualparadigm_url }}'
+    dest: /home/vagrant/visualparadigm.tar.gz
     mode: "0777"
   when: not VisualParadigm_tar.stat.exists
 
-- name: Unzip Visual Paradigm folder
+# - name: Create Visual Paradigm temporary folder
+#   file:
+#     path: /home/vagrant/visualparadigm
+#     state: directory
+#     mode: "0777"
+#     recurse: true
+
+- name: Unzip Visual Paradigm archive
   unarchive:
     src: >-
-      /home/vagrant/Visual_Paradigm_CE_16_2_20200763_Linux64_InstallFree.tar.gz
+      /home/vagrant/visualparadigm.tar.gz
     dest: /home/vagrant/
     remote_src: true
   when: not VisualParadigm_tar.stat.exists
 
-- stat: path=/usr/bin/Visual_Paradigm_CE_16.2
+- stat: path=/usr/bin/visualparadigm
   register: visualparadigm_correctlocation
 
-- name: Move Visual Paradigm folder to the correct location
+- name: Create Visual Paradigm folder
+  file:
+    path: /usr/bin/visualparadigm
+    state: directory
+    mode: "0777"
+    recurse: true
+  when: not visualparadigm_correctlocation.stat.exists
+
+- name: Move Visual Paradigm to the correct location
   shell:
-    cmd: mv /home/vagrant/Visual_Paradigm_CE_16.2 /usr/bin
+    cmd: mv /home/vagrant/{{ oosd_visualparadigm_version }} /usr/bin/visualparadigm
   when: not visualparadigm_correctlocation.stat.exists
 
 - name: Ansible create file with content example
@@ -65,12 +71,12 @@
 
       Keywords=visual;paradigm;
 
-      Exec=/usr/bin/Visual_Paradigm_CE_16.2/Visual_Paradigm
+      Exec=/usr/bin/visualparadigm/{{ oosd_visualparadigm_version }}/Visual_Paradigm
 
       # Translators: Do NOT translate or transliterate this text (this is an
       icon file name)!
 
-      Icon=/usr/bin/Visual_Paradigm_CE_16.2/Application/resources/vpuml.png
+      Icon=/usr/bin/visualparadigm/{{ oosd_visualparadigm_version }}/Application/resources/vpuml.png
 
       Terminal=false
 
@@ -81,4 +87,4 @@
       
 - name: Test VisualParadigm
   shell:
-    cmd: sudo /usr/bin/Visual_Paradigm_CE_16.2/Visual_Paradigm
+    cmd: sudo /usr/bin/visualparadigm/{{ oosd_visualparadigm_version }}/Visual_Paradigm
