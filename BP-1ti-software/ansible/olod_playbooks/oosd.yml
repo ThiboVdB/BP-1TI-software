@@ -26,13 +26,6 @@
     mode: "0777"
   when: not VisualParadigm_tar.stat.exists
 
-# - name: Create Visual Paradigm temporary folder
-#   file:
-#     path: /home/vagrant/visualparadigm
-#     state: directory
-#     mode: "0777"
-#     recurse: true
-
 - name: Unzip Visual Paradigm archive
   unarchive:
     src: >-

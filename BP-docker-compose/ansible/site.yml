@@ -20,24 +20,20 @@
         state: present
         mode: '0666'
 
-    - name: Install Docker Engine
-      apt:
-        name: 
-          - docker-ce
-          - docker-ce-cli
-          - containerd.io
+    - name: Install Docker Engine and Python pip
+      package:
+        name: '{{ item }}'
         state: present
-
-    - name: Install Python pip
-      apt:
-        name: python-pip
-        state: present
+      with_items:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+        - python-pip
 
     - name: Install Docker Modules for Python
       pip:
         name: 
           - docker
-          # - docker-py
         executable: pip
         
     - name: Add vagrant user to Docker groups
@@ -75,4 +71,6 @@
           - portainer_data:/data portainer/portainer
   handlers:
     - name: docker status
-      service: name=docker state=started
+      service: 
+        name: docker 
+        state: started

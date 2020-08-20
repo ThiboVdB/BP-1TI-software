@@ -72,8 +72,7 @@
       dconf: 
         key: "/org/gnome/desktop/background/picture-uri" 
         value: "'file:///home/vagrant/.wallpaper.jpg'"
-  ignore_errors: yes
-
+        
 - hosts: ops-kub-master
   become: true
   tasks:

@@ -28,12 +28,6 @@
     - '{{ dbs_docker_packages }}'
     - python-pip
 
-# - name: install Python pip
-#   apt:
-#     name: 
-#       - python-pip
-#     state: present
-
 - name: Install Docker Modules for Python
   pip:
     name:

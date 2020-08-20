@@ -29,11 +29,6 @@
     - python-pip
     - '{{ ops_kubernetes_packages }}'
 
-# - name: Install pip
-#   package:
-#     name: python-pip
-#     state: present
-
 - name: Install Docker Modules for Python
   pip:
     name: 
