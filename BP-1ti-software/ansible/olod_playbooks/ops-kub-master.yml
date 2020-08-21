@@ -5,7 +5,7 @@
     register: k8s_conf
 
   - name: Initialize the Kubernetes cluster using kubeadm
-    command: kubeadm init  --pod-network-cidr=192.168.56.0/24 --apiserver-advertise-address="{{ ansible_enp0s8.ipv4.address }}" --apiserver-cert-extra-sans="{{ ansible_enp0s8.ipv4.address }}"  --node-name k8s-master
+    command: kubeadm init  --pod-network-cidr=192.168.56.0/24 --apiserver-advertise-address="{{ ops_master_ip }}" --apiserver-cert-extra-sans="{{ ops_master_ip }}"  --node-name k8s-master
     when: not k8s_conf.stat.exists 
 
   - name: Setup kubeconfig for vagrant user

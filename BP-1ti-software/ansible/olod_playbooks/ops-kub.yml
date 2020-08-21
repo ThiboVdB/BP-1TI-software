@@ -5,7 +5,7 @@
 
 - name: Add Docker Repository
   apt_repository:
-    repo: deb '{{ ops_docker_repo_url }}'
+    repo: 'deb {{ ops_docker_repo_url }}'
     state: present
     mode: '0777'
 
@@ -16,7 +16,7 @@
 
 - name: Add Kubernetes Repository
   apt_repository:
-    repo: deb '{{ ops_kubernetes_repo_url }}'
+    repo: 'deb {{ ops_kubernetes_repo_url }}'
     state: present
     mode: '0777'
 
@@ -58,7 +58,7 @@
 - name: Configure node ip
   lineinfile:
     path: /etc/default/kubelet
-    line: KUBELET_EXTRA_ARGS=--node-ip={{ ansible_enp0s8.ipv4.address }}
+    line: KUBELET_EXTRA_ARGS=--node-ip={{ ops_master_ip }}
     create: true
     mode: '0777'
 

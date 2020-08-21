@@ -18,3 +18,5 @@ ops_kubernetes_packages:
   - kubectl
 
 ops_weave_url: 'https://cloud.weave.works/k8s/v1.16/net.yaml?k8s-version=1.18.6'
+
+ops_master_ip: '192.168.56.12'
