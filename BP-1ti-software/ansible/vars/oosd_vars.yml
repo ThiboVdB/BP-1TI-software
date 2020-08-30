@@ -6,7 +6,8 @@ oosd_packages:
 
 oosd_scenebuilder_url: 'https://download2.gluonhq.com/scenebuilder/11.0.0/install/linux/scenebuilder-11.0.0.deb'
 
-oosd_visualparadigm_url: 'https://uk3.dl.visual-paradigm.com/visual-paradigm/vpce16.2/20200763/Visual_Paradigm_CE_16_2_20200763_Linux64_InstallFree.tar.gz'
+oosd_visualparadigm_url: 'https://uk2.dl.visual-paradigm.com/visual-paradigm/vpce16.2/20200801/Visual_Paradigm_CE_16_2_20200801_Linux64_InstallFree.tar.gz'
+
 
 # Dit kan uit de URL gehaald worden. Let op! Het versienummer moet (indien nodig gespecificeerd worden met een "." bv. '16.2')
 oosd_visualparadigm_version: 'Visual_Paradigm_CE_16.2'
