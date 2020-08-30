@@ -53,7 +53,7 @@
     - import_tasks: ./olod_playbooks/ops.yml
     - import_tasks: ./olod_playbooks/cn.yml
   post_tasks:
-    - name: Add vagrant user to Docker groups
+    - name: Add vagrant user to vboxsf groups
       user:
         name: vagrant
         groups: vboxsf
