@@ -12,6 +12,18 @@ Voor elk van de virtuele machines in deze repository kunnen de volgende commando
 | ``vagrant ssh <vm-naam>``     | Verbinding maken met de command-line interface van de vm.      |  
 | ``vagrant destroy <vm-naam>`` | Virtuele machine verwijderen.    |  
 
+## VM Configuratie/customization
+Virtuele machine customizations worden gedaan in [vagrant-hosts.yml](./vagrant-hosts.yml).
+
+Voorbeeld:
+````
+- name: 1ti
+  ip: 192.168.56.100 <= ander IP
+  box: bento/ubuntu-18.04 <= andere Vagrant Box
+  cpus: 4 <= aantal CPU's
+  memory: 4096 <= aantal RAM geheugen
+````
+
 ## 1TI Software VM gebruiken zonder Vagrant
 De ``1ti`` virtuele machine kan ook gebruikt worden zonder Vagrant. Eens deze vm gecreëerd en provisioned is, is deze klaar voor gebruik. Echter de "shared folder" wordt niet automatisch gemount.
 Dit kan opgelost worden in de instellingen van de vm:
@@ -35,7 +47,7 @@ Software zoals Visual Paradigm wordt geïnstalleerd via een URL. Wanneer softwar
 
 Voorbeeld voor Visual Paradigm 16.2 Community Edition:
 
-In ``/ansible/vars/oosd_vars.yml``:
+In [/ansible/vars/oosd_vars.yml](./ansible/vars/oosd_vars.yml):
 ````[yaml]
 oosd_visualparadigm_url: 'https://uk2.dl.visual-paradigm.com/visual-paradigm/vpce16.2/20200801/Visual_Paradigm_CE_16_2_20200801_Linux64_InstallFree.tar.gz'
 
