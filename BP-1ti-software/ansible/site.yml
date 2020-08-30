@@ -53,6 +53,11 @@
     - import_tasks: ./olod_playbooks/ops.yml
     - import_tasks: ./olod_playbooks/cn.yml
   post_tasks:
+    - name: Add vagrant user to Docker groups
+      user:
+        name: vagrant
+        groups: vboxsf
+        
     - name: Install python-psutil package
       package:
         name: python-psutil
