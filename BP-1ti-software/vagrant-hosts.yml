@@ -7,19 +7,16 @@
 - name: 1ti
   ip: 192.168.56.10
   box: thibovdb/ubuntu-18.04
-  # box: ubu
   cpus: 2
   memory: 2048
 - name: ops-kub-master
   ip: 192.168.56.12
-  # box: thibovdb/ubuntu-18.04
   box: bento/ubuntu-18.04
   cpus: 2
   memory: 2048
 - name: ops-kub-node
   ip: 192.168.56.13
   box: bento/ubuntu-18.04
-  # box: thibovdb/ubuntu-18.04
   cpus: 2
   memory: 2048
 - name: cyber
